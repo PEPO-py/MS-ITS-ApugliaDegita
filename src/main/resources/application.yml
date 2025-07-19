@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: MS-ITS-ApugliaDegita
+  datasource:
+    url: jdbc:mysql://localhost:3306/ms_its_apuglia_digital
+    username: root
+    password: PQAmnb.*/@!*&nb@scv_Vlc-s+y
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update # Options: none, update, create, create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+  port: 8089
+
+users:
+  api:
+    url: http://localhost:8090/api/V1
+
