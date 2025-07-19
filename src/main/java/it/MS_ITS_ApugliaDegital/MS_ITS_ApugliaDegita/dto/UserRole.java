@@ -6,6 +6,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 public class UserRole {
+    private long id;
     private String name;
     private String description;
     private String roleCode;

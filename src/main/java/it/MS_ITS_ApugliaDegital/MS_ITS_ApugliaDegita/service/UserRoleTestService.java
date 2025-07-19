@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -38,8 +39,10 @@ public class UserRoleTestService {
             //HttpStatusCode status = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<UserRole>() {}).getStatusCode();
             // if (status.isSameCodeAs(HttpStatus.NOT_FOUND)) error404 = true;
             return restTemplate.getForObject(url, UserRole.class);
-        } catch (Exception e) {
-            throw new NotFoundException("User role not found with that id (%d)".formatted(id));
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND))
+                throw new NotFoundException("User role not found with that id (%d)".formatted(id));
+            else throw new InternalError("Error");
         }
     }
 
