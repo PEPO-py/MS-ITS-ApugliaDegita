@@ -13,7 +13,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-
+  #jackson:
+    # default-property-inclusions: always-non_null-non_absent-non_default-non_empty
+    #default-property-inclusion: non_empty
 server:
   port: 8089
 
