@@ -1,5 +1,6 @@
 package it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.dto;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter

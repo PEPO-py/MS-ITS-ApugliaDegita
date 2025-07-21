@@ -23,3 +23,5 @@ users:
   api:
     url: http://localhost:8090/api/V1
 
+debug: true
+
