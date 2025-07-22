@@ -1,7 +1,7 @@
 package it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.service;
 
-import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.dao.CorsoDAO;
 import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.dto.CorsoAllDataDTO;
+import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.dto.StudenteCorsiDTO;
 import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.dto.UserDTO;
 import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.dto.UserRole;
 import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.entity.Corso;
@@ -64,7 +64,7 @@ public class CorsoService {
 
     @Transactional
     public CorsoStudente addStudentiToCorso(@Valid CorsoStudente corsoStudente, BindingResult result) {
-        String url = this.apiBaseURl + "/users/" +  corsoStudente.getStudente_id();
+        String url = this.apiBaseURl + "/users/" +  corsoStudente.getStudenteId();
         Corso getCorso = corsoRepository.getCorsoById(corsoStudente.getCorsoId()).orElseThrow(() -> new NotFoundException("No corso found with that id (%d)".formatted(corsoStudente.getCorsoId())));
         if (result.hasErrors()) throw new DataValidationException(HandelValidationError.getAllErrors(result));
         else {
@@ -77,7 +77,7 @@ public class CorsoService {
                     return corsoStudenteService.createCorsoStudente(corsoStudente);
                 }
             } catch (HttpClientErrorException e) {
-                if (e.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND)) throw new NotFoundException("Student not found with this id (%d)".formatted(corsoStudente.getStudente_id()));
+                if (e.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND)) throw new NotFoundException("Student not found with this id (%d)".formatted(corsoStudente.getStudenteId()));
                 return corsoStudente;
             }
 
@@ -88,14 +88,18 @@ public class CorsoService {
     @Transactional(readOnly = true)
     public List<CorsoAllDataDTO> getAllCorsoInfo() {
         List<Corso> getAllCorsi = getAllCorso();
+
         List<CorsoAllDataDTO> allCorsoInfo = new ArrayList<>();
+
         CorsoAllDataDTO newCorsoInfo = new CorsoAllDataDTO();
-        for (int i=0; i<getAllCorsi.size(); i++) {
+
+        for (int i=0; i < getAllCorsi.size(); i++) {
             newCorsoInfo.setName(getAllCorsi.get(i).getName());
-            List<CorsoStudente> getStudentiOfCorso = corsoStudenteService.getStudentiOfCoroso(getAllCorsi.get(i).getId());
+            List<CorsoStudente> getStudentiOfCorso = corsoStudenteService.getStudentiOfCorso(getAllCorsi.get(i).getId());
             List<UserDTO> listOfStudenti = new ArrayList<>();
+
             for (int y=0; y < getStudentiOfCorso.size(); y++) {
-                String url = this.apiBaseURl + "/users/" +  getStudentiOfCorso.get(i).getStudente_id();
+                String url = this.apiBaseURl + "/users/" +  getStudentiOfCorso.get(i).getStudenteId();
                 listOfStudenti.add(restTemplate.getForObject(url, UserDTO.class));
             }
             newCorsoInfo.setStudenti(listOfStudenti);
@@ -103,34 +107,37 @@ public class CorsoService {
         allCorsoInfo.add(newCorsoInfo);
         return allCorsoInfo;
     }
-//    public Corso addStudentiToCorso(long corso_id, long studenti_id) {
-//        Corso getCorso = corsoRepository.getCorsoById(corso_id).orElseThrow(()-> new DataValidationException("Corso not found with that id (%d)".formatted(corso_id)));
-//        String url = this.apiBaseURl + "/users/" +  studenti_id;
-//        System.out.println("corso geted: " + getCorso);
-//        // get studenti by id
-//        try {
-//            UserDTO getStudent = restTemplate.getForObject(url, UserDTO.class);
-//            System.out.println("Student geted: " + getStudent);
-//            List<UserRole> getRoles = getStudent.getUserRole().stream().toList();
-//            if (getRoles.get(0).getId() != 1) {
-//                throw new DataValidationException("The id (%d) is not an student id".formatted(studenti_id));
-//            } else {
-//                Set<UserDTO> users = new HashSet<>();
-//                UserDTO addUser = new UserDTO();
-//                addUser.setId(getStudent.getId());
-//                addUser.setFirstName(getStudent.getFirstName());
-//                addUser.setLastName(getStudent.getLastName());
-//                addUser.setUserRole(getStudent.getUserRole());
-//                users.add(addUser);
-//                UserDTO saveUser = new UserDTO();
-//                saveUser.setId(addUser.getId());
-//                userDTORespository.save(saveUser);
-//                getCorso.setStudenti(users);
-//                return corsoRepository.save(getCorso);
-//            }
-//        } catch (HttpClientErrorException e) {
-//            if(e.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND)) throw new NotFoundException("Studenti not found with that id (%)".formatted(studenti_id));
-//            else return getCorso;
-//        }
-//    }
+
+    @Transactional(readOnly = true)
+    public StudenteCorsiDTO getCorsiOfStudente(long student_id) {
+        String urlStudente = this.apiBaseURl + "/users/1";
+        StudenteCorsiDTO studenteCorsi = new StudenteCorsiDTO();
+        studenteCorsi.setUtente(getOnlyUserStudentById(student_id).get());
+        List<CorsoStudente> corsiOfStudente = corsoStudenteService.getCorsiOfStudente(studenteCorsi.getUtente().getId());
+        List<Corso> studenteListOfCorsi = new ArrayList<>();
+        for (int i=0; i<corsiOfStudente.size(); i++) {
+            studenteListOfCorsi.add(getCorsoByID(corsiOfStudente.get(i).getCorsoId()));
+
+        }
+        studenteCorsi.setCorsi(studenteListOfCorsi);
+        return studenteCorsi;
+
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<UserDTO> getOnlyUserStudentById(long student_id) {
+        String urlStudente = this.apiBaseURl + "/users/" + student_id;
+        try {
+            UserDTO student = restTemplate.getForObject(urlStudente, UserDTO.class);
+            List<UserRole> userRole  = student.getUserRole().stream().toList();
+            if (userRole.get(0).getId() != 1) throw new DataValidationException("The id (%d) used is not a student id".formatted(student_id));
+            else {
+                return Optional.of(student);
+            }
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND)) throw new NotFoundException("Student not found with that id(%d)".formatted(student_id));
+            else return null;
+        }
+    }
+
 }

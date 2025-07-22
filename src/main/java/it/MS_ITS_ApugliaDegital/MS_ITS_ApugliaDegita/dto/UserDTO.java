@@ -15,4 +15,8 @@ public class UserDTO {
     private String lastName;
     private Set<UserRole> userRole;
 
+    public String marica (String qualsiasi) {
+        return qualsiasi;
+    }
+
 }

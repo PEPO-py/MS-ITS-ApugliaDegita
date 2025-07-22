@@ -18,7 +18,12 @@ public class CorsoStudenteService {
         return corsoStudenteRepository.save(newCorsoStudente);
     }
 
-    public List<CorsoStudente> getStudentiOfCoroso(long id) {
-        return corsoStudenteRepository.findCorsoStudenteByCorsoId(id);
+    public List<CorsoStudente> getStudentiOfCorso(long corso_id) {
+        return corsoStudenteRepository.findCorsoStudenteByCorsoId(corso_id);
     }
+
+    public List<CorsoStudente> getCorsiOfStudente(long student_id) {
+        return corsoStudenteRepository.findCorsoStudenteByStudenteId(student_id);
+    }
+
 }

@@ -3,9 +3,9 @@ package it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.dto;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@ToString
-@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class UserRole {
     private long id;
     private String name;

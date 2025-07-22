@@ -1,13 +1,11 @@
 package it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.controller;
 
-import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.dao.CorsoDAO;
 import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.dto.CorsoAllDataDTO;
 import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.entity.Corso;
 import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.entity.CorsoStudente;
 import it.MS_ITS_ApugliaDegital.MS_ITS_ApugliaDegita.service.CorsoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

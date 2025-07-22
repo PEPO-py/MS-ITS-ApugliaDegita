@@ -21,5 +21,5 @@ public class CorsoStudente {
     @Positive(message = "must be an long integer id")
     private long corsoId;
     @Positive(message = "must be an long integer id")
-    private long studente_id;
+    private long studenteId;
 }
