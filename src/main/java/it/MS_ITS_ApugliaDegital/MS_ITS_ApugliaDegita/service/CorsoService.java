@@ -110,7 +110,6 @@ public class CorsoService {
 
     @Transactional(readOnly = true)
     public StudenteCorsiDTO getCorsiOfStudente(long student_id) {
-        String urlStudente = this.apiBaseURl + "/users/1";
         StudenteCorsiDTO studenteCorsi = new StudenteCorsiDTO();
         studenteCorsi.setUtente(getOnlyUserStudentById(student_id).get());
         List<CorsoStudente> corsiOfStudente = corsoStudenteService.getCorsiOfStudente(studenteCorsi.getUtente().getId());
